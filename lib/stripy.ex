@@ -57,6 +57,8 @@ defmodule Stripy do
       mock_server = Application.get_env(:stripy, :mock_server, Stripy.MockServer)
       mock_server.request(action, resource, data)
     else
+      IO.inspect opts: opts
+      IO.inspect secret_key: Keyword.get(opts, :secret_key)
       secret_key = Keyword.get(opts, :secret_key) || Application.fetch_env!(:stripy, :secret_key)
 
       headers =
