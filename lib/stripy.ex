@@ -52,12 +52,12 @@ defmodule Stripy do
       iex> Stripy.req(:post, "customers", %{"email" => "a@b.c"}, %{"Idempotency-Key" => "ABC"})
       {:ok, %HTTPoison.Response{...}}
   """
-  def req(action, resource, data \\ %{}, headers \\ %{}) when action in [:get, :post, :delete] do
+  def req(action, resource, data \\ %{}, headers \\ %{}, opts \\ []) when action in [:get, :post, :delete] do
     if Application.get_env(:stripy, :testing, false) do
       mock_server = Application.get_env(:stripy, :mock_server, Stripy.MockServer)
       mock_server.request(action, resource, data)
     else
-      secret_key = Application.fetch_env!(:stripy, :secret_key)
+      secret_key = Keyword.get(opts, :secret_key) || Application.fetch_env!(:stripy, :secret_key)
 
       headers =
         @content_type_header
